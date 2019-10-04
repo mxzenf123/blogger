@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Hexo</title>
+  <title>MBlog</title>
   
   
   <link href="/atom.xml" rel="self"/>
@@ -10,7 +10,7 @@
   <id>http://870314.com/</id>
   
   <author>
-    <name>John Doe</name>
+    <name>杨欣</name>
     
   </author>
   
