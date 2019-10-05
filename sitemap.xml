@@ -2,16 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://870314.com/categories/index.html</loc>
+    <loc>http://870314.com/2019/09/28/%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/</loc>
     
-    <lastmod>2019-10-05T02:49:22.326Z</lastmod>
+    <lastmod>2019-10-05T07:02:16.780Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://870314.com/2019/09/28/hello-world/</loc>
+    <loc>http://870314.com/categories/index.html</loc>
     
-    <lastmod>2019-09-28T03:23:49.980Z</lastmod>
+    <lastmod>2019-10-05T06:57:11.492Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://870314.com/tags/index.html</loc>
+    
+    <lastmod>2019-10-05T06:55:05.558Z</lastmod>
     
   </url>
   
