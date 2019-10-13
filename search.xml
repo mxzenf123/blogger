@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[apache BeanUtils入门]]></title>
+    <url>%2F2019%2F10%2F13%2Fapache_beanutils%E4%BD%BF%E7%94%A8%E5%85%A5%E9%97%A8%2F</url>
+    <content type="text"><![CDATA[apache项目地址site 背景在我们使用java开发过程中，对于操作类的属性一般通过get或者set两个方法，类似于Object.get()/set()。但是有的时候我们可能不能够直接调用这两个方法获取类的属性，也许第一反应是用reflection，这样会自己写太多和业务无关的代码。apache commons包中BeanUtils能够帮助我们解决这个问题。 准备工作引入apache commons-beanutils包新建类Empolyee12345678910111213141516171819202122232425262728293031323334353637383940414243444546public class Employee &#123; public String firstName; public String lastName; public String[] tells; public Map address; public Employee()&#123; tells = new String[10]; address = new HashMap(); &#125; public String getFirstName() &#123; return firstName; &#125; public void setFirstName(String firstName) &#123; this.firstName = firstName; &#125; public String getLastName() &#123; return lastName; &#125; public void setLastName(String lastName) &#123; this.lastName = lastName; &#125; public String[] getTells() &#123; return tells; &#125; public void setTells(String[] tells) &#123; this.tells = tells; &#125; public Map getAddress() &#123; return address; &#125; public void setAddress(Map address) &#123; this.address = address; &#125;&#125; 开始使用这篇文章我们主要介绍该工具包中PropertyUtils入门使用 简单属性123Employee employee = new Employee();PropertyUtils.setSimpleProperty(employee, "firstName", "欣");PropertyUtils.setSimpleProperty(employee, "lastName", "杨"); 带索引的属性123Employee employee = new Employee();PropertyUtils.setIndexedProperty(employee, "tells[0]", "110");PropertyUtils.setIndexedProperty(employee, "tells[1]", "120"); key-value属性123Employee employee = new Employee();PropertyUtils.setMappedProperty(employee, "address(province)", "四川省");PropertyUtils.setMappedProperty(employee, "address(city)", "成都");]]></content>
+      <categories>
+        <category>框架工具</category>
+      </categories>
+      <tags>
+        <tag>apache commons</tag>
+        <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[使用hexo搭建个人博客]]></title>
     <url>%2F2019%2F09%2F28%2F%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2%2F</url>
-    <content type="text"><![CDATA[Quick start参考官网文档 快速开始创建博客文件夹1$ hexo new "My New Post" 更多: 创建 启动本地服务1$ hexo server 更多: 启动服务 生成静态文件1$ hexo generate 更多: 生成静态文件 发布到远程服务器1$ hexo deploy 更多: 发布]]></content>
+    <content type="text"><![CDATA[Quick start参考官网文档 快速开始创建博客文件夹1$ hexo new "My New Post" 更多: 创建 启动本地服务1$ hexo server 更多: 服务器 生成静态文件1$ hexo generate 更多: 生成静态文件 发布到远程服务器1$ hexo deploy 更多: 发布]]></content>
       <categories>
         <category>奇淫技巧</category>
       </categories>
