@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>我的生活记录</title>
   
-  
+  <subtitle>今晚打老虎</subtitle>
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://870314.com/"/>
