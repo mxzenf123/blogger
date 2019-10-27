@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://870314.com/"/>
-  <updated>2019-10-27T07:39:07.468Z</updated>
+  <updated>2019-10-27T07:41:12.816Z</updated>
   <id>http://870314.com/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>spring IoC和容器</title>
+    <title>spring IoC和容器问题整理</title>
     <link href="http://870314.com/2019/10/27/springioc%E9%97%AE%E9%A2%98%E6%95%B4%E7%90%86/"/>
     <id>http://870314.com/2019/10/27/springioc问题整理/</id>
     <published>2019-10-27T06:44:07.570Z</published>
-    <updated>2019-10-27T07:39:07.468Z</updated>
+    <updated>2019-10-27T07:41:12.816Z</updated>
     
     <content type="html"><![CDATA[<ul><li><p>什么是依赖注入以及有什么好处?</p></li><li><p>什么是接口，在java中使用的好处</p><ul><li>spring bean中为什么推荐使用接口</li></ul></li><li><p>application-context代表什么？</p></li><li><p>你怎么创建一个ApplicationContext实例？</p></li><li><p>描述bean在ApplicationoContext的声明周期</p></li><li><p>最好的关闭ApplicationContext的方式是什么？SpringBoot为我们做了这个吗？</p></li><li><p>能够描述一下下面的问题</p><ul><li>使用java进行依赖注入</li><li>使用注解进行依赖注入</li><li>组件、模块扫描</li><li>bean的scope</li><li>bean是懒加载还是预实例化？你怎么控制这种行为？</li></ul></li><li><p>什么是属性源文件？你怎么使用@PropertySource  </p></li><li><p>什么是BeanFactoryPostProcessor，有什么用？它什么时候被调用？  </p><ul><li>ProperySourcesPlaceholderConfigurer被用于什么地方？</li></ul></li><li><p>什么是组件扫描？</p></li><li><p>@Autowired注解关于属性、构造器和方法做了什么？</p></li><li><p>如果要向私有属性注入？怎么做到？</p></li><li><p>@Qualifier对@Autowired做了什么补充？</p></li><li><p>什么是对象代理？spring两种创建代理对象的区别？</p><ul><li>代理对象的限制？</li><li>代理对象的功能和弊端？</li></ul></li><li><p>@Bean注解有什么用</p></li><li><p>@Bean注解的Bean的默认id是什么？你如果改变？</p></li><li><p>为什么不允许在final类上使用@Configration注解</p><ul><li>@Configration支持单例bean吗</li><li>为什么@Bean注解的类的方法也不能是final的  </li></ul></li><li><p>什么时候配置profile？在哪些场景会有用</p></li><li><p>@Bean和@Profile能够同时使用吗？  </p></li><li><p>@Component和@Profile能够一起使用吗？</p></li><li><p>你能够列举多少种profiles？</p></li><li><p>怎么注入集合和k-v类型的数据到bean中？</p></li><li><p>什么是SpringEL表达式？</p></li><li><p>spring enviroment抽象是什么？</p></li><li><p>$和#有什么区别？ </p></li></ul>]]></content>
     
