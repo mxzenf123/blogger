@@ -23,21 +23,13 @@
     <published>2019-10-27T06:44:07.570Z</published>
     <updated>2019-10-27T07:41:12.816Z</updated>
     
-    <content type="html"><![CDATA[<ul><li><p>什么是依赖注入以及有什么好处?</p></li><li><p>什么是接口，在java中使用的好处</p><ul><li>spring bean中为什么推荐使用接口</li></ul></li><li><p>application-context代表什么？</p></li><li><p>你怎么创建一个ApplicationContext实例？</p></li><li><p>描述bean在ApplicationoContext的声明周期</p></li><li><p>最好的关闭ApplicationContext的方式是什么？SpringBoot为我们做了这个吗？</p></li><li><p>能够描述一下下面的问题</p><ul><li>使用java进行依赖注入</li><li>使用注解进行依赖注入</li><li>组件、模块扫描</li><li>bean的scope</li><li>bean是懒加载还是预实例化？你怎么控制这种行为？</li></ul></li><li><p>什么是属性源文件？你怎么使用@PropertySource  </p></li><li><p>什么是BeanFactoryPostProcessor，有什么用？它什么时候被调用？  </p><ul><li>ProperySourcesPlaceholderConfigurer被用于什么地方？</li></ul></li><li><p>什么是组件扫描？</p></li><li><p>@Autowired注解关于属性、构造器和方法做了什么？</p></li><li><p>如果要向私有属性注入？怎么做到？</p></li><li><p>@Qualifier对@Autowired做了什么补充？</p></li><li><p>什么是对象代理？spring两种创建代理对象的区别？</p><ul><li>代理对象的限制？</li><li>代理对象的功能和弊端？</li></ul></li><li><p>@Bean注解有什么用</p></li><li><p>@Bean注解的Bean的默认id是什么？你如果改变？</p></li><li><p>为什么不允许在final类上使用@Configration注解</p><ul><li>@Configration支持单例bean吗</li><li>为什么@Bean注解的类的方法也不能是final的  </li></ul></li><li><p>什么时候配置profile？在哪些场景会有用</p></li><li><p>@Bean和@Profile能够同时使用吗？  </p></li><li><p>@Component和@Profile能够一起使用吗？</p></li><li><p>你能够列举多少种profiles？</p></li><li><p>怎么注入集合和k-v类型的数据到bean中？</p></li><li><p>什么是SpringEL表达式？</p></li><li><p>spring enviroment抽象是什么？</p></li><li><p>$和#有什么区别？ </p></li></ul>]]></content>
+    <content type="html"><![CDATA[<ul><li><p>什么是依赖注入以及有什么好处?</p></li><li><p>什么是接口，在java中使用的好处</p><ul><li>spring bean中为什么推荐使用接口</li></ul></li><li><p>application-context代表什么？</p></li><li><p>你怎么创建一个ApplicationContext实例？</p></li><li><p>描述bean在ApplicationoContext的声明周期</p></li><li><p>最好的关闭ApplicationContext的方式是什么？SpringBoot为我们做了这个吗？</p></li><li><p>能够描述一下下面的问题</p><ul><li>使用java进行依赖注入</li><li>使用注解进行依赖注入</li><li>组件、模块扫描</li><li>bean的scope</li><li>bean是懒加载还是预实例化？你怎么控制这种行为？</li></ul></li><li><p>什么是属性源文件？你怎么使用@PropertySource</p></li><li><p>什么是BeanFactoryPostProcessor，有什么用？它什么时候被调用？</p><ul><li>ProperySourcesPlaceholderConfigurer被用于什么地方？</li></ul></li><li><p>什么是组件扫描？</p></li><li><p>@Autowired注解关于属性、构造器和方法做了什么？</p></li><li><p>如果要向私有属性注入？怎么做到？</p></li><li><p>@Qualifier对@Autowired做了什么补充？</p></li><li><p>什么是对象代理？spring两种创建代理对象的区别？</p><ul><li>代理对象的限制？</li><li>代理对象的功能和弊端？</li></ul></li><li><p>@Bean注解有什么用</p></li><li><p>@Bean注解的Bean的默认id是什么？你如果改变？</p></li><li><p>为什么不允许在final类上使用@Configration注解</p><ul><li>@Configration支持单例bean吗</li><li>为什么@Bean注解的类的方法也不能是final的</li></ul></li><li><p>什么时候配置profile？在哪些场景会有用</p></li><li><p>@Bean和@Profile能够同时使用吗？</p></li><li><p>@Component和@Profile能够一起使用吗？</p></li><li><p>你能够列举多少种profiles？</p></li><li><p>怎么注入集合和k-v类型的数据到bean中？</p></li><li><p>什么是SpringEL表达式？</p></li><li><p>spring enviroment抽象是什么？</p></li><li><p>$和#有什么区别？</p></li></ul>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;什么是依赖注入以及有什么好处?&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;什么是接口，在java中使用的好处&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;spring bean中为什么推荐使用接口&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;application-contex
+        &lt;ul&gt;&lt;li&gt;&lt;p&gt;什么是依赖注入以及有什么好处?&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;什么是接口，在java中使用的好处&lt;/p&gt;&lt;ul&gt;&lt;li&gt;spring bean中为什么推荐使用接口&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;application-context代表什么？&lt;/
       
     
     </summary>
@@ -65,10 +57,7 @@
     
       
       
-        &lt;h2 id=&quot;常规&quot;&gt;&lt;a href=&quot;#常规&quot; class=&quot;headerlink&quot; title=&quot;常规&quot;&gt;&lt;/a&gt;常规&lt;/h2&gt;&lt;p&gt;Ctrl+X，删除行&lt;/p&gt;
-&lt;p&gt;Ctrl+D，复制行&lt;/p&gt;
-&lt;p&gt;Ctrl+Alt+O，优化导入的类和包&lt;/p&gt;
-&lt;p&gt;Ctrl+Al
+        &lt;h2 id=&quot;常规&quot;&gt;&lt;a href=&quot;#常规&quot; class=&quot;headerlink&quot; title=&quot;常规&quot;&gt;&lt;/a&gt;常规&lt;/h2&gt;&lt;p&gt;Ctrl+X，删除行&lt;/p&gt;&lt;p&gt;Ctrl+D，复制行&lt;/p&gt;&lt;p&gt;Ctrl+Alt+O，优化导入的类和包&lt;/p&gt;&lt;p&gt;Ctrl+Alt+L
       
     
     </summary>
@@ -94,8 +83,7 @@
     
       
       
-        &lt;p&gt;apache项目地址&lt;a href=&quot;http://commons.apache.org/proper/commons-beanutils&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;site&lt;/a&gt;&lt;/p&gt;
-&lt;h2 id=&quot;背景&quot;&gt;&lt;a href=&quot;#
+        &lt;p&gt;apache项目地址&lt;a href=&quot;http://commons.apache.org/proper/commons-beanutils&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;site&lt;/a&gt;&lt;/p&gt;&lt;h2 id=&quot;背景&quot;&gt;&lt;a href=&quot;#背
       
     
     </summary>
@@ -123,8 +111,7 @@
     
       
       
-        &lt;p&gt;Quick start参考官网&lt;a href=&quot;https://hexo.io/docs/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;文档&lt;/a&gt;&lt;/p&gt;
-&lt;h2 id=&quot;快速开始&quot;&gt;&lt;a href=&quot;#快速开始&quot; class=&quot;headerlink&quot;
+        &lt;p&gt;Quick start参考官网&lt;a href=&quot;https://hexo.io/docs/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;文档&lt;/a&gt;&lt;/p&gt;&lt;h2 id=&quot;快速开始&quot;&gt;&lt;a href=&quot;#快速开始&quot; class=&quot;headerlink&quot; 
       
     
     </summary>
