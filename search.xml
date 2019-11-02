@@ -3,7 +3,7 @@
   <entry>
     <title><![CDATA[Integer的缓存机制]]></title>
     <url>%2F2019%2F11%2F02%2FInteger%E8%87%AA%E5%8A%A8%E8%A3%85%E7%AE%B1%E7%BC%93%E5%AD%98%2F</url>
-    <content type="text"><![CDATA[123456789101112131415161718192021public class JavaIntegerCache &#123; public static void main(String... strings) &#123; Integer integer1 = 3; Integer integer2 = 3; if (integer1 == integer2) System.out.println("integer1 == integer2"); else System.out.println("integer1 != integer2"); Integer integer3 = 300; Integer integer4 = 300; if (integer3 == integer4) System.out.println("integer3 == integer4"); else System.out.println("integer3 != integer4"); &#125;&#125;由于Integer是对象，两个对象比较，我们普遍的认为上面的两个结果都是false然后结果却会让你大跌眼镜。上面这段代码真正的输出结果：12integer1 == integer2integer3 != integer4原因就在于java5.0以后对于基本类型自动装箱的在范围-127到128之间会进行自动缓存以提升程序性能]]></content>
+    <content type="text"><![CDATA[123456789101112131415161718192021public class JavaIntegerCache &#123; public static void main(String... strings) &#123; Integer integer1 = 3; Integer integer2 = 3; if (integer1 == integer2) System.out.println("integer1 == integer2"); else System.out.println("integer1 != integer2"); Integer integer3 = 300; Integer integer4 = 300; if (integer3 == integer4) System.out.println("integer3 == integer4"); else System.out.println("integer3 != integer4"); &#125;&#125;由于Integer是对象，两个对象比较，我们普遍的认为上面的两个结果都是false然而结果却会让你大跌眼镜。上面这段代码真正的输出结果：12integer1 == integer2integer3 != integer4原因就在于java5.0以后对于基本类型自动装箱的在范围-127到128之间会进行自动缓存以提升程序性能]]></content>
       <categories>
         <category>java基础</category>
       </categories>
