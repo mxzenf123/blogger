@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[mybatis动态sql之组合模式]]></title>
+    <url>%2F2019%2F11%2F02%2Fmybatis%E5%8A%A8%E6%80%81sql%E5%AE%9E%E7%8E%B0%E4%B9%8B%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F%2F</url>
+    <content type="text"><![CDATA[组合设计模式组合设计模式是一种整体与部分的树形层次关系结构。组合对象中各个对象具有相同的行为模式，这样就能处理简单对象一样处理复杂对象。复杂对象的底层细节将会被屏蔽掉，与客户端解耦，最重要的是和简单对象一样实现了同一个接口mybatis动态sql实现同一个接口1234public interface SqlNode &#123; //共同的行为 boolean apply(DynamicContext context);&#125;复杂对象12345678910111213141516 //混合sqlnode节点，组合不同类型的sqlnode //其他node有：trim,set,where,if,otherwise //choose public class MixedSqlNode implements SqlNode &#123; private final List&lt;SqlNode&gt; contents;public MixedSqlNode(List&lt;SqlNode&gt; contents)&#123; this.contents = contents;&#125;@Overridepublic boolean apply(DynamicContext context)&#123; contents.forEach(node -&gt; node.apply(context)); return true;&#125; &#125;简单对象1234567891011121314151617181920212223//if sqlnode实现了接口sqlnode的apply方法，//定义了自己的行为只有当test表达式为真的时候//才会将节点内容增加到动态上下文的sql拼接中public class IfSqlNode implements SqlNode &#123; private final ExpressionEvaluator evaluator; private final String test; private final SqlNode contents; public IfSqlNode(SqlNode contents, String test) &#123; this.test = test; this.contents = contents; this.evaluator = new ExpressionEvaluator(); &#125; @Override public boolean apply(DynamicContext context) &#123; if (evaluator.evaluateBoolean(test, context.getBindings())) &#123; contents.apply(context); return true; &#125; return false; &#125;&#125;mybatis一组复杂sql在xml文件中的配置12345678910111213141516171819202122232425&lt;!-- trim节点作为根节点，下面有三个if子节点，在Mybatis中组织成 一个根节点MixedNode节点下两个trim节点和where节点;trim节点 下一个MixedNode节点，由三个if节点组成;where节点实际上的trim 节点的另一种实现，原理一样 --&gt;&lt;update id="update" parameterType="org.format.dynamicproxy.mybatis.bean.User"&gt; UPDATE users &lt;trim prefix="SET" prefixOverrides=","&gt; &lt;if test="name != null and name != ''"&gt; name = #&#123;name&#125; &lt;/if&gt; &lt;if test="age != null and age != ''"&gt; , age = #&#123;age&#125; &lt;/if&gt; &lt;if test="birthday != null and birthday != ''"&gt; , birthday = #&#123;birthday&#125; &lt;/if&gt; &lt;/trim&gt; &lt;where&gt; 1=1 &lt;if test="id != null"&gt; and id = $&#123;id&#125; &lt;/if&gt; &lt;/where&gt;&lt;/update&gt;总结组合模式对于具有层次关系多个对象能够很好的表达，但是比较抽象不容易掌控。提高了软件设计困难同时屏蔽了对象复杂性，客户端使用变得简单]]></content>
+      <categories>
+        <category>框架工具</category>
+      </categories>
+      <tags>
+        <tag>mybatis动态sql</tag>
+        <tag>组合设计模式</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[spring IoC和容器问题整理]]></title>
     <url>%2F2019%2F10%2F27%2Fspringioc%E9%97%AE%E9%A2%98%E6%95%B4%E7%90%86%2F</url>
     <content type="text"><![CDATA[什么是依赖注入以及有什么好处?什么是接口，在java中使用的好处spring bean中为什么推荐使用接口application-context代表什么？你怎么创建一个ApplicationContext实例？描述bean在ApplicationoContext的声明周期最好的关闭ApplicationContext的方式是什么？SpringBoot为我们做了这个吗？能够描述一下下面的问题使用java进行依赖注入使用注解进行依赖注入组件、模块扫描bean的scopebean是懒加载还是预实例化？你怎么控制这种行为？什么是属性源文件？你怎么使用@PropertySource什么是BeanFactoryPostProcessor，有什么用？它什么时候被调用？ProperySourcesPlaceholderConfigurer被用于什么地方？什么是组件扫描？@Autowired注解关于属性、构造器和方法做了什么？如果要向私有属性注入？怎么做到？@Qualifier对@Autowired做了什么补充？什么是对象代理？spring两种创建代理对象的区别？代理对象的限制？代理对象的功能和弊端？@Bean注解有什么用@Bean注解的Bean的默认id是什么？你如果改变？为什么不允许在final类上使用@Configration注解@Configration支持单例bean吗为什么@Bean注解的类的方法也不能是final的什么时候配置profile？在哪些场景会有用@Bean和@Profile能够同时使用吗？@Component和@Profile能够一起使用吗？你能够列举多少种profiles？怎么注入集合和k-v类型的数据到bean中？什么是SpringEL表达式？spring enviroment抽象是什么？$和#有什么区别？]]></content>
