@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://870314.com/"/>
-  <updated>2019-11-02T08:33:48.971Z</updated>
+  <updated>2019-11-02T09:08:39.759Z</updated>
   <id>http://870314.com/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Integer的缓存机制</title>
+    <link href="http://870314.com/2019/11/02/Integer%E8%87%AA%E5%8A%A8%E8%A3%85%E7%AE%B1%E7%BC%93%E5%AD%98/"/>
+    <id>http://870314.com/2019/11/02/Integer自动装箱缓存/</id>
+    <published>2019-11-02T09:03:40.988Z</published>
+    <updated>2019-11-02T09:08:39.759Z</updated>
+    
+    <content type="html"><![CDATA[<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JavaIntegerCache</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String... strings)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        Integer integer1 = <span class="number">3</span>;</span><br><span class="line">        Integer integer2 = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (integer1 == integer2)</span><br><span class="line">            System.out.println(<span class="string">"integer1 == integer2"</span>);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            System.out.println(<span class="string">"integer1 != integer2"</span>);</span><br><span class="line"></span><br><span class="line">        Integer integer3 = <span class="number">300</span>;</span><br><span class="line">        Integer integer4 = <span class="number">300</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (integer3 == integer4)</span><br><span class="line">            System.out.println(<span class="string">"integer3 == integer4"</span>);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            System.out.println(<span class="string">"integer3 != integer4"</span>);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>由于Integer是对象，两个对象比较，我们普遍的认为上面的两个结果都是false<br>然后结果却会让你大跌眼镜。</p><p>上面这段代码真正的输出结果：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">integer1 == integer2</span><br><span class="line">integer3 != integer4</span><br></pre></td></tr></table></figure><p>原因就在于java5.0以后对于基本类型自动装箱的在范围-127到128之间会进行自动<br>缓存以提升程序性能</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;figure class=&quot;highlight java&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=
+      
+    
+    </summary>
+    
+    
+      <category term="java基础" scheme="http://870314.com/categories/java%E5%9F%BA%E7%A1%80/"/>
+    
+    
+      <category term="java自动装箱" scheme="http://870314.com/tags/java%E8%87%AA%E5%8A%A8%E8%A3%85%E7%AE%B1/"/>
+    
+      <category term="java缓存" scheme="http://870314.com/tags/java%E7%BC%93%E5%AD%98/"/>
+    
+  </entry>
   
   <entry>
     <title>mybatis动态sql之组合模式</title>
