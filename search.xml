@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[java自动拆装箱问题总结]]></title>
+    <url>%2F2019%2F11%2F03%2Fjava%E8%87%AA%E5%8A%A8%E6%8B%86%E8%A3%85%E7%AE%B1%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93%2F</url>
+    <content type="text"><![CDATA[java自动拆装箱自jdk1.5以后新增功能。目的是为了解决基础数据类型和对象操作不便利。比如集合List只能操作对象，而无法对基本数据类型进行add，remove等一系列操作。对自动拆装箱学习过程中，产生了一系列疑问，总结如下jdk如何实现自动拆装箱自动拆装箱优点和缺点自动拆装箱什么时候不自动进行]]></content>
+      <categories>
+        <category>java基础</category>
+      </categories>
+      <tags>
+        <tag>java自动拆装箱</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Integer的缓存机制]]></title>
     <url>%2F2019%2F11%2F02%2FInteger%E8%87%AA%E5%8A%A8%E8%A3%85%E7%AE%B1%E7%BC%93%E5%AD%98%2F</url>
     <content type="text"><![CDATA[123456789101112131415161718192021public class JavaIntegerCache &#123; public static void main(String... strings) &#123; Integer integer1 = 3; Integer integer2 = 3; if (integer1 == integer2) System.out.println("integer1 == integer2"); else System.out.println("integer1 != integer2"); Integer integer3 = 300; Integer integer4 = 300; if (integer3 == integer4) System.out.println("integer3 == integer4"); else System.out.println("integer3 != integer4"); &#125;&#125;由于Integer是对象，两个对象比较，我们普遍的认为上面的两个结果都是false然而结果却会让你大跌眼镜。上面这段代码真正的输出结果：12integer1 == integer2integer3 != integer4原因就在于java5.0以后对于基本类型自动装箱的在范围-127到128之间会进行自动缓存以提升程序性能]]></content>
