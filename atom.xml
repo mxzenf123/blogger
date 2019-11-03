@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://870314.com/"/>
-  <updated>2019-11-03T03:40:19.455Z</updated>
+  <updated>2019-11-03T03:42:45.033Z</updated>
   <id>http://870314.com/</id>
   
   <author>
@@ -21,9 +21,9 @@
     <link href="http://870314.com/2019/11/03/java%E8%87%AA%E5%8A%A8%E6%8B%86%E8%A3%85%E7%AE%B1%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/"/>
     <id>http://870314.com/2019/11/03/java自动拆装箱问题总结/</id>
     <published>2019-11-03T03:35:43.214Z</published>
-    <updated>2019-11-03T03:40:19.455Z</updated>
+    <updated>2019-11-03T03:42:45.033Z</updated>
     
-    <content type="html"><![CDATA[<p>java自动拆装箱自jdk1.5以后新增功能。目的是为了解决基础<br>数据类型和对象操作不便利。比如集合List只能操作对象，而<br>无法对基本数据类型进行add，remove等一系列操作。对自动拆<br>装箱学习过程中，产生了一系列疑问，总结如下</p><h2 id="jdk如何实现自动拆装箱"><a href="#jdk如何实现自动拆装箱" class="headerlink" title="jdk如何实现自动拆装箱"></a>jdk如何实现自动拆装箱</h2><h2 id="自动拆装箱优点和缺点"><a href="#自动拆装箱优点和缺点" class="headerlink" title="自动拆装箱优点和缺点"></a>自动拆装箱优点和缺点</h2><h2 id="自动拆装箱什么时候不自动进行"><a href="#自动拆装箱什么时候不自动进行" class="headerlink" title="自动拆装箱什么时候不自动进行"></a>自动拆装箱什么时候不自动进行</h2>]]></content>
+    <content type="html"><![CDATA[<p>java自动拆装箱自jdk1.5以后新增功能。目的是为了解决基础<br>数据类型和对象操作不便利。比如集合List只能操作对象，而<br>无法对基本数据类型进行add，remove等一系列操作。对自动拆<br>装箱学习过程中，产生了一系列疑问，总结如下</p><h2 id="什么是基础数据类型，什么是包装类"><a href="#什么是基础数据类型，什么是包装类" class="headerlink" title="什么是基础数据类型，什么是包装类"></a>什么是基础数据类型，什么是包装类</h2><h2 id="jdk如何实现自动拆装箱"><a href="#jdk如何实现自动拆装箱" class="headerlink" title="jdk如何实现自动拆装箱"></a>jdk如何实现自动拆装箱</h2><h2 id="自动拆装箱优点和缺点"><a href="#自动拆装箱优点和缺点" class="headerlink" title="自动拆装箱优点和缺点"></a>自动拆装箱优点和缺点</h2><h2 id="自动拆装箱什么时候不自动进行"><a href="#自动拆装箱什么时候不自动进行" class="headerlink" title="自动拆装箱什么时候不自动进行"></a>自动拆装箱什么时候不自动进行</h2>]]></content>
     
     <summary type="html">
     
