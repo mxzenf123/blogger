@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://870314.com/"/>
-  <updated>2019-11-10T08:03:58.689Z</updated>
+  <updated>2019-11-23T09:15:40.853Z</updated>
   <id>http://870314.com/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>apache commons-io IOUtils入门</title>
+    <link href="http://870314.com/2019/11/23/IOUtils%E5%85%A5%E9%97%A8/"/>
+    <id>http://870314.com/2019/11/23/IOUtils入门/</id>
+    <published>2019-11-23T09:08:29.026Z</published>
+    <updated>2019-11-23T09:15:40.853Z</updated>
+    
+    <content type="html"><![CDATA[<p>IOUtils提供了输入和输出的静态工具方法：</p><ul><li>toXXX/read 从流读取数据</li><li>wirte 写入数据进流</li><li>copy 流之间复制数据</li><li>contentEquals 比较两个流</li></ul><p>IOUtils的所有方法都采取默认字符集，也可以指定字符集。从流读取数据都默认使用了Buffered流，意味着<br>我们不需要额外进行流缓冲类使用。</p><p>工具中，所有流都自动flush和close，不需要手动调用flush、close方法。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;IOUtils提供了输入和输出的静态工具方法：&lt;/p&gt;&lt;ul&gt;&lt;li&gt;toXXX/read 从流读取数据&lt;/li&gt;&lt;li&gt;wirte 写入数据进流&lt;/li&gt;&lt;li&gt;copy 流之间复制数据&lt;/li&gt;&lt;li&gt;contentEquals 比较两个流&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;IO
+      
+    
+    </summary>
+    
+    
+      <category term="apache commons" scheme="http://870314.com/categories/apache-commons/"/>
+    
+    
+      <category term="IOUtils" scheme="http://870314.com/tags/IOUtils/"/>
+    
+  </entry>
   
   <entry>
     <title>为什么阿里巴巴禁止在foreach循环里进行元素的remove/add操作</title>

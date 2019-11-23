@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[apache commons-io IOUtils入门]]></title>
+    <url>%2F2019%2F11%2F23%2FIOUtils%E5%85%A5%E9%97%A8%2F</url>
+    <content type="text"><![CDATA[IOUtils提供了输入和输出的静态工具方法：toXXX/read 从流读取数据wirte 写入数据进流copy 流之间复制数据contentEquals 比较两个流IOUtils的所有方法都采取默认字符集，也可以指定字符集。从流读取数据都默认使用了Buffered流，意味着我们不需要额外进行流缓冲类使用。工具中，所有流都自动flush和close，不需要手动调用flush、close方法。]]></content>
+      <categories>
+        <category>apache commons</category>
+      </categories>
+      <tags>
+        <tag>IOUtils</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[为什么阿里巴巴禁止在foreach循环里进行元素的remove/add操作]]></title>
     <url>%2F2019%2F11%2F10%2F%E4%B8%BA%E4%BB%80%E4%B9%88%E9%98%BF%E9%87%8C%E5%B7%B4%E5%B7%B4%E7%A6%81%E6%AD%A2%E5%9C%A8foreach%E5%BE%AA%E7%8E%AF%E9%87%8C%E8%BF%9B%E8%A1%8C%E5%85%83%E7%B4%A0%E7%9A%84removeadd%E6%93%8D%E4%BD%9C%2F</url>
     <content type="text"><![CDATA[什么是fail-fast机制在wiki上关于fast-fail描述原文In systems design, a fail-fast system is one which immediately reports at its interface any condition that is likely to indicate a failure. Fail-fast systems are usually designed to stop normal operation rather than attempt to continue a possibly flawed process. Such designs often check the system’s state at several points in an operation, so any failures can be detected early. The responsibility of a fail-fast module is detecting errors, then letting the next-highest level of the system handle them.大致意思，在做系统设计的时候，fail-fast能够快速报告故障。fail-fast设计用于停止正常的操作，而不是让潜在错误的程序继续运行。该设计在每一次操作上都检查系统状态，能够提前检测任何故障。fail-fast能够检测错误，并且把错误交给更高一级进行处理。一个简单的fail-fast例子1234567 public int divide(int divisor, int dividend)&#123; if (dividend == 0)&#123; throw new RuntimeException("除数不能为0");&#125;return divisor / dividend; &#125;fail-fast不要被这个专业术语所唬住，实际上很简单。就是对代码可能出现的一些错误提前预判罢了foreach语法糖在java较早的时候对于List集合循环我们大多使用这样123for (int i = list.size()-1;i &gt;= 0 ;i--)&#123; ...&#125;java给我们提供了一个foreach语法糖便利的来对集合进行遍历123for (String s : list) &#123; ...&#125;这个语法糖原理实际上是使用了List中自带的Iterator实现。但是这个留下了一个巨坑，就是在遍历的时候如果list.remove(o)方法会抛出java.util.ConcurrentModificationException异常。明明没有多线程操作啊，怎么会有这个异常，让人一脸懵逼。ArrayList集合fail-fast保护实现1，由于ArrayList不是线程安全的，在每次对集合进行操作的时候会调用一个这样的方法：1234final void checkForComodification() &#123; if (modCount != expectedModCount) throw new ConcurrentModificationException(); &#125;modCount是ArrayList的成员变量代表对集合操作次数；expectedModCount理论上是和modCount一样的2，在使用Iterator迭代集合的时候，如果调用的ArrayList的remove方法，会有个这样的操作modCount++，这个时候checkForComodification检查失败所以抛出了ConcurrentModificationException异常]]></content>
