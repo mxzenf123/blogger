@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://870314.com/"/>
-  <updated>2019-11-23T09:15:40.853Z</updated>
+  <updated>2019-12-14T09:43:43.801Z</updated>
   <id>http://870314.com/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>mybatis一级缓存源码分析</title>
+    <link href="http://870314.com/2019/12/14/mybatis%E4%B8%80%E7%BA%A7%E7%BC%93%E5%AD%98/"/>
+    <id>http://870314.com/2019/12/14/mybatis一级缓存/</id>
+    <published>2019-12-14T09:26:53.389Z</published>
+    <updated>2019-12-14T09:43:43.801Z</updated>
+    
+    <content type="html"><![CDATA[<p>###源码分析<br>mybatis的一级缓存是session级别默认开启的，如果使用不当不了解其原理会造成一些隐患。<br>session在执行查询的时候委托给executor，一级缓存为起一个map结构的localCache变量实现。<br>主要代码如下</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//取缓存数据根据cacheKey，cacheKey数据结构感兴趣可以阅读源码</span></span><br><span class="line">list = resultHandler == <span class="keyword">null</span> ? (List&lt;E&gt;) localCache.getObject(key) : <span class="keyword">null</span>;</span><br><span class="line"><span class="keyword">if</span> (list != <span class="keyword">null</span>) &#123;</span><br><span class="line">  handleLocallyCachedOutputParameters(ms, key, parameter, boundSql);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">//没取到就查询数据库</span></span><br><span class="line">  list = queryFromDatabase(ms, parameter, rowBounds, resultHandler, key, boundSql);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>在queryFormDatabase方法中会put操作localCache将结果缓存。但是如果配置了参数localCacheScop<br>为statement级别那么不会进行缓存</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (configuration.getLocalCacheScope() == LocalCacheScope.STATEMENT) &#123;</span><br><span class="line">  <span class="comment">// 清空localCache</span></span><br><span class="line">  clearLocalCache();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>###常见问题<br>如果对于同一个命名空间select的id相同，不同session可能会存在脏读</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//开启两个session</span></span><br><span class="line"><span class="comment">//涉及的测试环境在mybatis源码中可以找到</span></span><br><span class="line">SqlSession session1 = sqlMapper.openSession();</span><br><span class="line">SqlSession session2 = sqlMapper.openSession();</span><br><span class="line">Blog blog1 = session1.selectOne(<span class="string">"org.apache.ibatis.domain.blog.mappers.NestedBlogMapper.selectBlogJoinedWithPostsAndAuthor"</span>, <span class="number">1</span>);</span><br><span class="line">Blog blog2 = session2.selectOne(<span class="string">"org.apache.ibatis.domain.blog.mappers.NestedBlogMapper.selectBlogJoinedWithPostsAndAuthor"</span>, <span class="number">1</span>);</span><br><span class="line">assertEquals(<span class="string">"Jim Business"</span>, blog1.getTitle());</span><br><span class="line">assertEquals(<span class="string">"Jim Business"</span>, blog2.getTitle());</span><br><span class="line">session1.update(<span class="string">"org.apache.ibatis.domain.blog.mappers.NestedBlogMapper.upBlogId"</span>, <span class="number">1</span>);</span><br><span class="line">session1.commit();</span><br><span class="line">Blog blog3 = session1.selectOne(<span class="string">"org.apache.ibatis.domain.blog.mappers.NestedBlogMapper.selectBlogJoinedWithPostsAndAuthor"</span>, <span class="number">1</span>);</span><br><span class="line">Blog blog4 = session2.selectOne(<span class="string">"org.apache.ibatis.domain.blog.mappers.NestedBlogMapper.selectBlogJoinedWithPostsAndAuthor"</span>, <span class="number">1</span>);</span><br><span class="line">assertEquals(<span class="string">"new title"</span>, blog4.getTitle());<span class="comment">//失败 false</span></span><br><span class="line">assertEquals(<span class="string">"new title"</span>, blog3.getTitle());<span class="comment">//成功 true</span></span><br></pre></td></tr></table></figure><p>上面代码实际上会测试失败，因为产生了脏读。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;###源码分析&lt;br&gt;mybatis的一级缓存是session级别默认开启的，如果使用不当不了解其原理会造成一些隐患。&lt;br&gt;session在执行查询的时候委托给executor，一级缓存为起一个map结构的localCache变量实现。&lt;br&gt;主要代码如下&lt;/p&gt;&lt;fig
+      
+    
+    </summary>
+    
+    
+      <category term="mybatis" scheme="http://870314.com/categories/mybatis/"/>
+    
+    
+      <category term="mybatis缓存" scheme="http://870314.com/tags/mybatis%E7%BC%93%E5%AD%98/"/>
+    
+  </entry>
   
   <entry>
     <title>apache commons-io IOUtils入门</title>
