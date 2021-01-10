@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title><![CDATA[全栈java必备的10项技能]]></title>
-    <url>%2F2020%2F06%2F10%2F%E5%85%A8%E6%A0%88java%E5%89%8D10%E4%B8%AA%E5%BF%85%E5%A4%87%E6%8A%80%E8%83%BD%2F</url>
-    <content type="text"><![CDATA[如果你打算在你的java程序员职业生涯找到突破，作为一个java全栈开发者你应该掌握这些技能1，软件的设计和架构软件设计和架构师在软件开发过程中最重要的一部分。不只是java开发者，对于大多数应用开发者而言，软件设计和架构让你能够总揽全局，处理当前问题的必备技能2，微服务软件架构的不断演进，很多公司已经从单一架构转变为微服务架构。现在正是java程序员跟上潮流学习微服务的时候。3，DevOps工具（Jenkins,Docker和k8s）现在的java程序员devops是必不可少的。至少应该知道使用Jenkins进行持续集成和部署4，spring全家桶现在几乎所有的公司都离不开spring，spring对于各种开发场景都有解决方案，学习并掌握spring势在必行。5，JUnit和Mockio将优秀的java开发者和普通的java开发者区分开来的一项恐怕就是单元测试技能了。一个好的java开发者总是会对他写的代码写单元测试，你可以从他的代码中看到这一点。6，java api合lib7，JVM原理如果你想在java开发路上走的更远，你永远避不开jvm这个话题。JIT,JVM参数，gc8，设计模式9，Kotlin语言10，IDE]]></content>
-      <categories>
-        <category>翻译</category>
-      </categories>
-      <tags>
-        <tag>java全栈</tag>
-        <tag>devops</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[mybatis分页原理]]></title>
     <url>%2F2019%2F12%2F21%2Fmybatis%E5%88%86%E9%A1%B5%E5%8E%9F%E7%90%86%2F</url>
     <content type="text"><![CDATA[mybatis分页原理在通过session查询数据的时候，根据传入的数据结构RowBounds来进行查询数据库结果集的skip和limit操作达到分页的目的mybatis分页相关代码RowBounds类12345678910111213141516171819202122232425262728public class RowBounds &#123; public static final int NO_ROW_OFFSET = 0;//默认 public static final int NO_ROW_LIMIT = Integer.MAX_VALUE;//默认 public static final RowBounds DEFAULT = new RowBounds();//默认 private int offset; private int limit; public RowBounds() &#123; this.offset = NO_ROW_OFFSET; this.limit = NO_ROW_LIMIT; &#125; public RowBounds(int offset, int limit) &#123; this.offset = offset; this.limit = limit; &#125; public int getOffset() &#123; return offset; &#125; public int getLimit() &#123; return limit; &#125;&#125;可以看出RowBounds类还是比较简单，offset和limit只有这两个成员属性，Mybatis分页主要也是根据这两个属性DefaultSqlSession根据RowBounds类进行分页查询123456789101112131415@Override public &lt;E&gt; List&lt;E&gt; selectList(String statement, Object parameter) &#123; return this.selectList(statement, parameter, RowBounds.DEFAULT);&#125;public &lt;E&gt; List&lt;E&gt; selectList(String statement, Object parameter, RowBounds rowBounds) &#123; try &#123; MappedStatement ms = configuration.getMappedStatement(statement); return executor.query(ms, wrapCollection(parameter), rowBounds, Executor.NO_RESULT_HANDLER); &#125; catch (Exception e) &#123; throw ExceptionFactory.wrapException("Error querying database. Cause: " + e, e); &#125; finally &#123; ErrorContext.instance().reset(); &#125;&#125;如果不传入RowBounds那么使用默认的，offset从0开始，limit为Integer最大值DefaultResultSetHandler根据RowBounds进行返回结果集处理12345678910private void handleRowValuesForSimpleResultMap(ResultSetWrapper rsw, ResultMap resultMap, ResultHandler&lt;?&gt; resultHandler, RowBounds rowBounds, ResultMapping parentMapping) throws SQLException &#123; DefaultResultContext&lt;Object&gt; resultContext = new DefaultResultContext&lt;Object&gt;(); skipRows(rsw.getResultSet(), rowBounds);//1 while (shouldProcessMoreRows(resultContext, rowBounds)/*2*/ &amp;&amp; rsw.getResultSet().next()) &#123; ResultMap discriminatedResultMap = resolveDiscriminatedResultMap(rsw.getResultSet(), resultMap, null); Object rowValue = getRowValue(rsw, discriminatedResultMap); storeObject(resultHandler, resultContext, rowValue, parentMapping, rsw.getResultSet()); &#125;&#125;1，根据offset跳过结果集到指定行数2，根据limit获取指定数量的结果集总结mybatis自带分页实现较为简单，将所有结果查询出来，然后取固定某段结果。明显的缺点就是需要将结果全部查询出去，如果进行分页需要手动的去计算指定offset和limit，使用不是很方便。]]></content>
