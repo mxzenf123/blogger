@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://mxzenf123.github.io/index.html/"/>
-  <updated>2021-04-10T08:12:04.043Z</updated>
+  <updated>2021-04-24T06:56:06.221Z</updated>
   <id>https://mxzenf123.github.io/index.html/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>并发编程模型</title>
+    <link href="https://mxzenf123.github.io/index.html/2021/04/18/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%9E%8B/"/>
+    <id>https://mxzenf123.github.io/index.html/2021/04/18/并发编程模型/</id>
+    <published>2021-04-18T06:04:40.365Z</published>
+    <updated>2021-04-24T06:56:06.221Z</updated>
+    
+    <content type="html"><![CDATA[<p>我们使用并发系统开处理业务，需要用不同的方式来对业务进行拆分。拆分的方式不同需要考虑的线程之间协作和互斥关系也会不同。</p><h3 id="分布式系统和并发系模型"><a href="#分布式系统和并发系模型" class="headerlink" title="分布式系统和并发系模型"></a>分布式系统和并发系模型</h3><p>分布式系统是进程通过网络进行通信完成工作协同；并发系统是线程之间相互通信。进程和线程在操作系统中有很多相似性，所以分布式系统体系结构也可以用在并发系统中。</p><p>一，并行模型</p><p>将同一个任务分解为不同的部分执行，完成后进行结果汇总。在java中jdk1.7开始引入的forkjoin框架，hadoop中的mapreduce，都体现了并行思想。执行拆解后的任务可以是不同机器也可以是不同的CPU。</p><ol><li>优点</li></ol><p>并行模型很容易理解，容易扩展，将任务拆分后理论上可以增加更多的资源来提升并行度</p><ol start="2"><li>缺点</li></ol><ul><li>共享状态困难</li></ul><p>在并行模型中，每个执行任务的工作者可能会共享一些数据，就需要引入一些工作者之间相互通信的机制并且要考虑竟态和死锁问题。此外，在工作者对共享数据访问/操作时，可能会在工作者之间相互等待而丧失一部分并行性。</p><p>虽然可以通过引入一些非阻塞算法来改善，但是通常情况下非阻塞算法实现起来较为困难。<br>复杂的数据结构也能够解决共享状态带来改观，但往往也不尽人意。比如说一个链表，需要在头部插入一个节点，并且返回指向新加入节点的一个引用，所有其他工作者仍然保持着链表第一个引用无法看到新加入的元素。</p><ul><li>任务执行顺序不确定</li></ul><p>多个工作者并行执行任务无法保证各个工作者先后执行完成的顺序。并行模型的这个特性使得并发系统在任何一个时间节点无法推断当前系统的状态</p><p>二，流水线模型</p><p>富士康流水线组装手机，每个工人只负责手机的某个部分，一部完整的手机组装完成可能会经过数人操作。每个工人无须知道前一个工人或者后一个工人的工作状态，也可以称作无状态模型。</p><p>在java中通常使用非阻塞的IO来实现，非阻塞意味着一旦一个工作者在遇到耗时的IO操作的时候不必停顿下来等待而是继续执行其他任务。IO完成的时候工作者可以继续操作将结果交给下一个工作者。</p><p>有了非阻塞IO模型，可以使用IO操作来确定工作者之间的边界，从而尽可能的利用IO等待时间做更多的事，IO返回结果后，流水线上下一个工作者再继续操作</p><p>并发系统中流水线可能会有多条，同时执行多个作业，甚至一个工作者可以接收到不同工作者传递的作业。</p><p>流水线模型优点：</p><ol><li>工作者之间无须共享状态</li><li>工作者可以是有状态的</li><li>可以保证作业顺序性</li></ol><h4 id="Actors和Channels"><a href="#Actors和Channels" class="headerlink" title="Actors和Channels"></a>Actors和Channels</h4><p>这两个概念是在java中都有对应的实现。java的NIO中引入channel，每个工作者之间通过channel来进行消息传递，而不用知道是谁传的或者将会传给谁，只需要在在通道上注册自己感兴趣的操作即可，这使得流水线上各个工作者之间松散耦合。</p><h3 id="使用哪种模型比较好"><a href="#使用哪种模型比较好" class="headerlink" title="使用哪种模型比较好"></a>使用哪种模型比较好</h3><p>这取决于系统需要干什么，如果业务本身是并行的不需要共享状态，可以使用并行模型比较好。对于很多业务都不是自然独立并行的这种我相信使用流水线模型会发挥系统更大效能</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;我们使用并发系统开处理业务，需要用不同的方式来对业务进行拆分。拆分的方式不同需要考虑的线程之间协作和互斥关系也会不同。&lt;/p&gt;&lt;h3 id=&quot;分布式系统和并发系模型&quot;&gt;&lt;a href=&quot;#分布式系统和并发系模型&quot; class=&quot;headerlink&quot; title=&quot;分布式系
+      
+    
+    </summary>
+    
+    
+      <category term="java基础" scheme="https://mxzenf123.github.io/index.html/categories/java%E5%9F%BA%E7%A1%80/"/>
+    
+    
+      <category term="java并发编程" scheme="https://mxzenf123.github.io/index.html/tags/java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
+    
+  </entry>
   
   <entry>
     <title>多线程优点</title>
