@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://mxzenf123.github.io/index.html/"/>
-  <updated>2021-06-06T09:28:30.031Z</updated>
+  <updated>2021-06-20T03:45:26.972Z</updated>
   <id>https://mxzenf123.github.io/index.html/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Thread类的join方法</title>
+    <link href="https://mxzenf123.github.io/index.html/2021/06/20/Thread%E7%B1%BB%E7%9A%84join%E6%96%B9%E6%B3%95/"/>
+    <id>https://mxzenf123.github.io/index.html/2021/06/20/Thread类的join方法/</id>
+    <published>2021-06-20T02:07:53.006Z</published>
+    <updated>2021-06-20T03:45:26.972Z</updated>
+    
+    <content type="html"><![CDATA[<p>如果两个线程A和B，线程A要等待线程B执行完后再继续执行，那么可以在线程A中调用线程B实例的join方法。</p><p>现在通过代码来直观感受一下，在main线程中创建demo1线程，并调用demo1线程的join方法。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">log.debug(Thread.currentThread().getName() + <span class="string">"开始"</span>);</span><br><span class="line"></span><br><span class="line">Thread thread1 = <span class="keyword">new</span> Thread(()-&gt;&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        log.debug(Thread.currentThread().getName() + <span class="string">"开始"</span>);</span><br><span class="line">        Thread.sleep(<span class="number">2000</span>);</span><br><span class="line">        log.debug(Thread.currentThread().getName() + <span class="string">"结束"</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;,<span class="string">"demo1"</span>);</span><br><span class="line">thread1.start();</span><br><span class="line">thread1.join();</span><br><span class="line">log.debug(Thread.currentThread().getName() + <span class="string">"结束"</span>);</span><br></pre></td></tr></table></figure><p>控制台输出</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2021</span>-<span class="number">06</span>-<span class="number">20</span> <span class="number">10</span>:<span class="number">56</span>:<span class="number">39.620</span> [main] DEBUG org.yangxin.thread.ThreadTest:<span class="number">86</span> - main开始</span><br><span class="line"><span class="number">2021</span>-<span class="number">06</span>-<span class="number">20</span> <span class="number">10</span>:<span class="number">56</span>:<span class="number">39.668</span> [demo1] DEBUG org.yangxin.thread.ThreadTest:<span class="number">90</span> - demo1开始</span><br><span class="line"><span class="number">2021</span>-<span class="number">06</span>-<span class="number">20</span> <span class="number">10</span>:<span class="number">56</span>:<span class="number">41.680</span> [demo1] DEBUG org.yangxin.thread.ThreadTest:<span class="number">92</span> - demo1结束</span><br><span class="line"><span class="number">2021</span>-<span class="number">06</span>-<span class="number">20</span> <span class="number">10</span>:<span class="number">56</span>:<span class="number">41.681</span> [main] DEBUG org.yangxin.thread.ThreadTest:<span class="number">100</span> - main结束</span><br></pre></td></tr></table></figure><p>可以看到运行结果和我们预想的输出顺序基本一致，main线程在结束前调用demo1.join，demo1线程sleep2秒后执行完毕，main线程继续完成执行。</p><p>如果join的线程执行时间未知，main线程可能永远的等待下去，这个时候我们希望等待一定的时间不管join的线程是否执行完毕，main线程继续往下执行，代码可更改在调用thread1.jion方法时加上参数thread1.join(1000)：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">thread1.join(<span class="number">1000</span>);</span><br></pre></td></tr></table></figure><p>main线程等待demo1线程1秒钟，1秒钟后main线程继续执行</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2021</span>-<span class="number">06</span>-<span class="number">20</span> <span class="number">11</span>:<span class="number">29</span>:<span class="number">53.055</span> [main] DEBUG org.yangxin.thread.ThreadTest:<span class="number">86</span> - main开始</span><br><span class="line"><span class="number">2021</span>-<span class="number">06</span>-<span class="number">20</span> <span class="number">11</span>:<span class="number">29</span>:<span class="number">53.105</span> [demo1] DEBUG org.yangxin.thread.ThreadTest:<span class="number">89</span> - demo1开始</span><br><span class="line"><span class="number">2021</span>-<span class="number">06</span>-<span class="number">20</span> <span class="number">11</span>:<span class="number">29</span>:<span class="number">54.119</span> [main] DEBUG org.yangxin.thread.ThreadTest:<span class="number">99</span> - main结束</span><br><span class="line"><span class="number">2021</span>-<span class="number">06</span>-<span class="number">20</span> <span class="number">11</span>:<span class="number">29</span>:<span class="number">55.110</span> [demo1] DEBUG org.yangxin.thread.ThreadTest:<span class="number">95</span> - demo1开始</span><br></pre></td></tr></table></figure><p>控制台输出demo1开始执行后，main等待了1秒钟然后继续执行并输出执行完毕，再过了一秒钟demo1执行完毕。</p><p>join还遗留了一个问题，main线程何时怎么样被notify的；查看了start方法，里面并没有notify的代码，初步推断是在start0这个native方法里面唤醒的main线程</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;如果两个线程A和B，线程A要等待线程B执行完后再继续执行，那么可以在线程A中调用线程B实例的join方法。&lt;/p&gt;&lt;p&gt;现在通过代码来直观感受一下，在main线程中创建demo1线程，并调用demo1线程的join方法。&lt;/p&gt;&lt;figure class=&quot;highligh
+      
+    
+    </summary>
+    
+    
+      <category term="java基础" scheme="https://mxzenf123.github.io/index.html/categories/java%E5%9F%BA%E7%A1%80/"/>
+    
+    
+      <category term="java并发编程" scheme="https://mxzenf123.github.io/index.html/tags/java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
+    
+  </entry>
   
   <entry>
     <title>线程的状态</title>
