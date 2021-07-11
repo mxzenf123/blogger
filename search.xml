@@ -1,6 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[多线程和共享资源问题]]></title>
+    <url>%2F2021%2F07%2F11%2F%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%92%8C%E5%85%B1%E4%BA%AB%E8%B5%84%E6%BA%90%E9%97%AE%E9%A2%98%2F</url>
+    <content type="text"><![CDATA[jvm和java线程java所有的线程都工作在一个jvm实例下，jvm为每个线程运行分配所需要的空间：栈和堆。堆是jvm分配所有线程共享存储对象的区域，线程栈保存着线程运行时信息。如果多个线程同时对堆中分配对象（基本数据类型）进行操作，就会发生多线程共享问题线程共享资源我们写一个功能为两个线程同时累加一个变量500万次，最后输出累加结果，我们期望的结果是1000万，最后的结果是否和我们期望的一致呢？1234567891011121314static int sum = 0;Runnable r1 = ()-&gt;&#123; for (int i = 0;i &lt; 500*10000;i++) &#123; sum++; &#125;&#125;;Thread thread1 = new Thread(r1);Thread thread2 = new Thread(r1);thread1.start();thread2.start();thread1.join();thread2.join();log.debug("累加结果：" + sum);我们定义了一静态int变量并初始化为0。定义了一段可执行代码对sum自增500万次。创建两个线程执行它，并在main线程中等待这两个线程执行完毕后输出结果12021-07-11 15:45:07.574 [main] DEBUG org.yangxin.thread.ThreadTest:102 - 累加结果：5358584输出结果和我们预期相差的天远地远，不管我们运行多少次上面的代码，输出结果可能不同，但是几乎没有一次是我们期望的结果1000万，那么问题到底出在哪里呢？多线程访问共享变量的秘密上面代码中可执行代码sum++实际有三个操作，首先是把sum的值取出来，然后加1，把加到的结果再赋值给sum变量。执行这段代码的两个线程thread1和thread2，可能出现如果sum=0的时候，两个线程同时执行这段代码thread1将sum变量副本值0拷贝到自己本地，同时thread2也将sum变量副本值0，thread1执行完后sum=1再将该值拷贝到堆中，thread2也做同样的操作，这个时候sum为1而不是2改进后的代码我们将sum++自增操作放在关键字synchronized代码块中再来运行观察结果123synchronized (ThreadTest.class) &#123; sum++;&#125;12021-07-11 16:11:01.626 [main] DEBUG org.yangxin.thread.ThreadTest:104 - 累加结果：10000000结果终于达到了我们的预期输出了1000万竞态条件和临界区多线程操作同一资源（写）时，如果对于先后顺序敏感，就称存在竞态条件。导致竞态条件变化的代码块叫做临界区。上述代码中sum就是一个竞态条件，sum++就是一个临界区，代码中加入了同步关键字synchronized同步来解决，更多java同步和锁的内容会在后续文章继续介绍]]></content>
+      <categories>
+        <category>java基础</category>
+      </categories>
+      <tags>
+        <tag>java并发编程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Thread类的join方法]]></title>
+    <url>%2F2021%2F06%2F27%2F%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E9%94%81%2F</url>
+    <content type="text"><![CDATA[如果两个线程A和B，线程A要等待线程B执行完后再继续执行，那么可以在线程A中调用线程B实例的join方法。现在通过代码来直观感受一下，在main线程中创建demo1线程，并调用demo1线程的join方法。1234567891011121314log.debug(Thread.currentThread().getName() + "开始");Thread thread1 = new Thread(()-&gt;&#123; try &#123; log.debug(Thread.currentThread().getName() + "开始"); Thread.sleep(2000); log.debug(Thread.currentThread().getName() + "结束"); &#125; catch (InterruptedException e) &#123; e.printStackTrace(); &#125;&#125;,"demo1");thread1.start();thread1.join();log.debug(Thread.currentThread().getName() + "结束");控制台输出12342021-06-20 10:56:39.620 [main] DEBUG org.yangxin.thread.ThreadTest:86 - main开始2021-06-20 10:56:39.668 [demo1] DEBUG org.yangxin.thread.ThreadTest:90 - demo1开始2021-06-20 10:56:41.680 [demo1] DEBUG org.yangxin.thread.ThreadTest:92 - demo1结束2021-06-20 10:56:41.681 [main] DEBUG org.yangxin.thread.ThreadTest:100 - main结束可以看到运行结果和我们预想的输出顺序基本一致，main线程在结束前调用demo1.join，demo1线程sleep2秒后执行完毕，main线程继续完成执行。如果join的线程执行时间未知，main线程可能永远的等待下去，这个时候我们希望等待一定的时间不管join的线程是否执行完毕，main线程继续往下执行，代码可更改在调用thread1.jion方法时加上参数thread1.join(1000)：1thread1.join(1000);main线程等待demo1线程1秒钟，1秒钟后main线程继续执行12342021-06-20 11:29:53.055 [main] DEBUG org.yangxin.thread.ThreadTest:86 - main开始2021-06-20 11:29:53.105 [demo1] DEBUG org.yangxin.thread.ThreadTest:89 - demo1开始2021-06-20 11:29:54.119 [main] DEBUG org.yangxin.thread.ThreadTest:99 - main结束2021-06-20 11:29:55.110 [demo1] DEBUG org.yangxin.thread.ThreadTest:95 - demo1开始控制台输出demo1开始执行后，main等待了1秒钟然后继续执行并输出执行完毕，再过了一秒钟demo1执行完毕。join还遗留了一个问题，main线程何时怎么样被notify的；查看了start方法，里面并没有notify的代码，初步推断是在start0这个native方法里面唤醒的main线程]]></content>
+      <categories>
+        <category>java基础</category>
+      </categories>
+      <tags>
+        <tag>java并发编程</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Thread类的join方法]]></title>
     <url>%2F2021%2F06%2F20%2FThread%E7%B1%BB%E7%9A%84join%E6%96%B9%E6%B3%95%2F</url>
     <content type="text"><![CDATA[如果两个线程A和B，线程A要等待线程B执行完后再继续执行，那么可以在线程A中调用线程B实例的join方法。现在通过代码来直观感受一下，在main线程中创建demo1线程，并调用demo1线程的join方法。1234567891011121314log.debug(Thread.currentThread().getName() + "开始");Thread thread1 = new Thread(()-&gt;&#123; try &#123; log.debug(Thread.currentThread().getName() + "开始"); Thread.sleep(2000); log.debug(Thread.currentThread().getName() + "结束"); &#125; catch (InterruptedException e) &#123; e.printStackTrace(); &#125;&#125;,"demo1");thread1.start();thread1.join();log.debug(Thread.currentThread().getName() + "结束");控制台输出12342021-06-20 10:56:39.620 [main] DEBUG org.yangxin.thread.ThreadTest:86 - main开始2021-06-20 10:56:39.668 [demo1] DEBUG org.yangxin.thread.ThreadTest:90 - demo1开始2021-06-20 10:56:41.680 [demo1] DEBUG org.yangxin.thread.ThreadTest:92 - demo1结束2021-06-20 10:56:41.681 [main] DEBUG org.yangxin.thread.ThreadTest:100 - main结束可以看到运行结果和我们预想的输出顺序基本一致，main线程在结束前调用demo1.join，demo1线程sleep2秒后执行完毕，main线程继续完成执行。如果join的线程执行时间未知，main线程可能永远的等待下去，这个时候我们希望等待一定的时间不管join的线程是否执行完毕，main线程继续往下执行，代码可更改在调用thread1.jion方法时加上参数thread1.join(1000)：1thread1.join(1000);main线程等待demo1线程1秒钟，1秒钟后main线程继续执行12342021-06-20 11:29:53.055 [main] DEBUG org.yangxin.thread.ThreadTest:86 - main开始2021-06-20 11:29:53.105 [demo1] DEBUG org.yangxin.thread.ThreadTest:89 - demo1开始2021-06-20 11:29:54.119 [main] DEBUG org.yangxin.thread.ThreadTest:99 - main结束2021-06-20 11:29:55.110 [demo1] DEBUG org.yangxin.thread.ThreadTest:95 - demo1开始控制台输出demo1开始执行后，main等待了1秒钟然后继续执行并输出执行完毕，再过了一秒钟demo1执行完毕。join还遗留了一个问题，main线程何时怎么样被notify的；查看了start方法，里面并没有notify的代码，初步推断是在start0这个native方法里面唤醒的main线程]]></content>
