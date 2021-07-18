@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[线程安全和不可变性]]></title>
+    <url>%2F2021%2F07%2F18%2F%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E5%92%8C%E4%B8%8D%E5%8F%AF%E5%8F%98%E6%80%A7%2F</url>
+    <content type="text"><![CDATA[多个线程对同一个变量进行了写操作才会出现竟态条件。只是读操作是永远不可能产生竟态条件的。创建不可变的对象我们可以创建一个不可变的对象保证多线程访问的时候不会被修改从而实现了线程安全123456789101112public class ImmutableValue &#123; private int value = 0; public ImmutableValue(int value) &#123; this.value = value; &#125; public int getValue()&#123; return this.value; &#125;&#125;我们创建了一个类ImmutableValue，该类创建的时候通过构造方法对成员变量value进行赋值，类没有提供修改value值的方法，一旦创建类那么value也就不再进行修改。提供了getValue()方法获取value的值。对象引用仍然是线程不安全的虽然类ImmutableValue是不可变的，在多线程环境下不存在线程安全问题。但是不可变的类的引用确实线程不安全的1234567891011public class ImmutableValueHolder &#123; private ImmutableValue value = null; public ImmutableValueHolder(ImmutableValue value)&#123; this.value = value; &#125; public void setValue(ImmutableValue value)&#123; this.value = value; &#125;&#125;在类中ImmutableValueHolder属性value是不可变的类，但是该类本身会改变value的引用。虽然ImmutableValue是不可变的，但是作为该类中的引用时却是线程不安全的]]></content>
+      <categories>
+        <category>java基础</category>
+      </categories>
+      <tags>
+        <tag>java并发编程</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[多线程和共享资源问题]]></title>
     <url>%2F2021%2F07%2F11%2F%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%92%8C%E5%85%B1%E4%BA%AB%E8%B5%84%E6%BA%90%E9%97%AE%E9%A2%98%2F</url>
     <content type="text"><![CDATA[jvm和java线程java所有的线程都工作在一个jvm实例下，jvm为每个线程运行分配所需要的空间：栈和堆。堆是jvm分配所有线程共享存储对象的区域，线程栈保存着线程运行时信息。如果多个线程同时对堆中分配对象（基本数据类型）进行操作，就会发生多线程共享问题线程共享资源我们写一个功能为两个线程同时累加一个变量500万次，最后输出累加结果，我们期望的结果是1000万，最后的结果是否和我们期望的一致呢？1234567891011121314static int sum = 0;Runnable r1 = ()-&gt;&#123; for (int i = 0;i &lt; 500*10000;i++) &#123; sum++; &#125;&#125;;Thread thread1 = new Thread(r1);Thread thread2 = new Thread(r1);thread1.start();thread2.start();thread1.join();thread2.join();log.debug("累加结果：" + sum);我们定义了一静态int变量并初始化为0。定义了一段可执行代码对sum自增500万次。创建两个线程执行它，并在main线程中等待这两个线程执行完毕后输出结果12021-07-11 15:45:07.574 [main] DEBUG org.yangxin.thread.ThreadTest:102 - 累加结果：5358584输出结果和我们预期相差的天远地远，不管我们运行多少次上面的代码，输出结果可能不同，但是几乎没有一次是我们期望的结果1000万，那么问题到底出在哪里呢？多线程访问共享变量的秘密上面代码中可执行代码sum++实际有三个操作，首先是把sum的值取出来，然后加1，把加到的结果再赋值给sum变量。执行这段代码的两个线程thread1和thread2，可能出现如果sum=0的时候，两个线程同时执行这段代码thread1将sum变量副本值0拷贝到自己本地，同时thread2也将sum变量副本值0，thread1执行完后sum=1再将该值拷贝到堆中，thread2也做同样的操作，这个时候sum为1而不是2改进后的代码我们将sum++自增操作放在关键字synchronized代码块中再来运行观察结果123synchronized (ThreadTest.class) &#123; sum++;&#125;12021-07-11 16:11:01.626 [main] DEBUG org.yangxin.thread.ThreadTest:104 - 累加结果：10000000结果终于达到了我们的预期输出了1000万竞态条件和临界区多线程操作同一资源（写）时，如果对于先后顺序敏感，就称存在竞态条件。导致竞态条件变化的代码块叫做临界区。上述代码中sum就是一个竞态条件，sum++就是一个临界区，代码中加入了同步关键字synchronized同步来解决，更多java同步和锁的内容会在后续文章继续介绍]]></content>

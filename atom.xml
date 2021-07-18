@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://mxzenf123.github.io/index.html/"/>
-  <updated>2021-07-11T08:22:31.368Z</updated>
+  <updated>2021-07-18T08:59:26.150Z</updated>
   <id>https://mxzenf123.github.io/index.html/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>线程安全和不可变性</title>
+    <link href="https://mxzenf123.github.io/index.html/2021/07/18/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E5%92%8C%E4%B8%8D%E5%8F%AF%E5%8F%98%E6%80%A7/"/>
+    <id>https://mxzenf123.github.io/index.html/2021/07/18/线程安全和不可变性/</id>
+    <published>2021-07-18T07:54:17.190Z</published>
+    <updated>2021-07-18T08:59:26.150Z</updated>
+    
+    <content type="html"><![CDATA[<p>多个线程对同一个变量进行了写操作才会出现竟态条件。只是读操作是永远不可能产生竟态条件的。</p><h3 id="创建不可变的对象"><a href="#创建不可变的对象" class="headerlink" title="创建不可变的对象"></a>创建不可变的对象</h3><p>我们可以创建一个不可变的对象保证多线程访问的时候不会被修改从而实现了线程安全</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ImmutableValue</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> value = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ImmutableValue</span><span class="params">(<span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.value = value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getValue</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>我们创建了一个类ImmutableValue，该类创建的时候通过构造方法对成员变量value进行赋值，类没有提供修改value值的方法，一旦创建类那么value也就不再进行修改。提供了getValue()方法获取value的值。</p><h3 id="对象引用仍然是线程不安全的"><a href="#对象引用仍然是线程不安全的" class="headerlink" title="对象引用仍然是线程不安全的"></a>对象引用仍然是线程不安全的</h3><p>虽然类ImmutableValue是不可变的，在多线程环境下不存在线程安全问题。但是不可变的类的引用确实线程不安全的</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ImmutableValueHolder</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> ImmutableValue value = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ImmutableValueHolder</span><span class="params">(ImmutableValue value)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.value = value;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setValue</span><span class="params">(ImmutableValue value)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.value = value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>在类中ImmutableValueHolder属性value是不可变的类，但是该类本身会改变value的引用。虽然ImmutableValue是不可变的，但是作为该类中的引用时却是线程不安全的</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;多个线程对同一个变量进行了写操作才会出现竟态条件。只是读操作是永远不可能产生竟态条件的。&lt;/p&gt;&lt;h3 id=&quot;创建不可变的对象&quot;&gt;&lt;a href=&quot;#创建不可变的对象&quot; class=&quot;headerlink&quot; title=&quot;创建不可变的对象&quot;&gt;&lt;/a&gt;创建不可变的对象&lt;/h
+      
+    
+    </summary>
+    
+    
+      <category term="java基础" scheme="https://mxzenf123.github.io/index.html/categories/java%E5%9F%BA%E7%A1%80/"/>
+    
+    
+      <category term="java并发编程" scheme="https://mxzenf123.github.io/index.html/tags/java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
+    
+  </entry>
   
   <entry>
     <title>多线程和共享资源问题</title>
@@ -513,34 +539,6 @@
       <category term="mybatis动态sql" scheme="https://mxzenf123.github.io/index.html/tags/mybatis%E5%8A%A8%E6%80%81sql/"/>
     
       <category term="组合设计模式" scheme="https://mxzenf123.github.io/index.html/tags/%E7%BB%84%E5%90%88%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>spring IoC和容器问题整理</title>
-    <link href="https://mxzenf123.github.io/index.html/2019/10/27/springioc%E9%97%AE%E9%A2%98%E6%95%B4%E7%90%86/"/>
-    <id>https://mxzenf123.github.io/index.html/2019/10/27/springioc问题整理/</id>
-    <published>2019-10-27T06:44:07.570Z</published>
-    <updated>2019-10-27T07:41:12.816Z</updated>
-    
-    <content type="html"><![CDATA[<ul><li><p>什么是依赖注入以及有什么好处?</p></li><li><p>什么是接口，在java中使用的好处</p><ul><li>spring bean中为什么推荐使用接口</li></ul></li><li><p>application-context代表什么？</p></li><li><p>你怎么创建一个ApplicationContext实例？</p></li><li><p>描述bean在ApplicationoContext的声明周期</p></li><li><p>最好的关闭ApplicationContext的方式是什么？SpringBoot为我们做了这个吗？</p></li><li><p>能够描述一下下面的问题</p><ul><li>使用java进行依赖注入</li><li>使用注解进行依赖注入</li><li>组件、模块扫描</li><li>bean的scope</li><li>bean是懒加载还是预实例化？你怎么控制这种行为？</li></ul></li><li><p>什么是属性源文件？你怎么使用@PropertySource</p></li><li><p>什么是BeanFactoryPostProcessor，有什么用？它什么时候被调用？</p><ul><li>ProperySourcesPlaceholderConfigurer被用于什么地方？</li></ul></li><li><p>什么是组件扫描？</p></li><li><p>@Autowired注解关于属性、构造器和方法做了什么？</p></li><li><p>如果要向私有属性注入？怎么做到？</p></li><li><p>@Qualifier对@Autowired做了什么补充？</p></li><li><p>什么是对象代理？spring两种创建代理对象的区别？</p><ul><li>代理对象的限制？</li><li>代理对象的功能和弊端？</li></ul></li><li><p>@Bean注解有什么用</p></li><li><p>@Bean注解的Bean的默认id是什么？你如果改变？</p></li><li><p>为什么不允许在final类上使用@Configration注解</p><ul><li>@Configration支持单例bean吗</li><li>为什么@Bean注解的类的方法也不能是final的</li></ul></li><li><p>什么时候配置profile？在哪些场景会有用</p></li><li><p>@Bean和@Profile能够同时使用吗？</p></li><li><p>@Component和@Profile能够一起使用吗？</p></li><li><p>你能够列举多少种profiles？</p></li><li><p>怎么注入集合和k-v类型的数据到bean中？</p></li><li><p>什么是SpringEL表达式？</p></li><li><p>spring enviroment抽象是什么？</p></li><li><p>$和#有什么区别？</p></li></ul>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;ul&gt;&lt;li&gt;&lt;p&gt;什么是依赖注入以及有什么好处?&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;什么是接口，在java中使用的好处&lt;/p&gt;&lt;ul&gt;&lt;li&gt;spring bean中为什么推荐使用接口&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;application-context代表什么？&lt;/
-      
-    
-    </summary>
-    
-    
-      <category term="spring" scheme="https://mxzenf123.github.io/index.html/categories/spring/"/>
-    
-    
-      <category term="spring IoC" scheme="https://mxzenf123.github.io/index.html/tags/spring-IoC/"/>
-    
-      <category term="spring容器" scheme="https://mxzenf123.github.io/index.html/tags/spring%E5%AE%B9%E5%99%A8/"/>
     
   </entry>
   
