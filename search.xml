@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[LockSupport]]></title>
+    <url>%2F2021%2F08%2F08%2FLockSupport%2F</url>
+    <content type="text"><![CDATA[创建锁和其他同步类的基础同步原语。该类使每个线程都关联一个许可(permit)。调用park方法时，如果许可可用那么立即返回否则就阻塞，调用unpark释放许可。基本使用我们通过简短的一段代码演示如何使用park来阻塞线程，再调用unpark方法来唤醒线程代码如下：1234567891011Thread main = Thread.currentThread();new Thread( ()-&gt;&#123; try &#123; Thread.sleep(1000); &#125; catch (InterruptedException e) &#123; e.printStackTrace(); &#125; LockSupport.unpark(main);&#125;).start();LockSupport.park();System.out.println("main结束");在main线程中调用park方法阻塞，启动一个线程sleep1秒钟中后调用unpark方法唤醒main线程控制台输出如下：1main结束类图在LockSupport类中全部都是static的方法，意味着我们可以当作工具方法直接调用无须创建该类LockSupport特性无序：在子线程中预先释放许可，main线程中获取许可直接返回1234567891011Thread main = Thread.currentThread();new Thread( ()-&gt;&#123; LockSupport.unpark(main);&#125;).start();try &#123; Thread.sleep(1000);&#125; catch (InterruptedException e) &#123; e.printStackTrace();&#125;LockSupport.park();System.out.println("main结束");main线程中创建子线程直接对main线程进行许可释放。main线程sleep1秒钟后获得许可直接返回控制台输出：1main结束不可重入：如果多次调用park线程直接进入死锁子线程各种重复调用两次LockSupport.unpark(main)方法，main线程中同样的重复调用LockSupport.park()方法，我们认为的情况是，释放了两次许可后，获取两次许可都应该是立即返回并在控制台输出：main结束，但是实际情况并非如此而是直接发生了死锁]]></content>
+      <categories>
+        <category>java基础</category>
+      </categories>
+      <tags>
+        <tag>java并发编程</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[线程安全和不可变性]]></title>
     <url>%2F2021%2F07%2F18%2F%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E5%92%8C%E4%B8%8D%E5%8F%AF%E5%8F%98%E6%80%A7%2F</url>
     <content type="text"><![CDATA[多个线程对同一个变量进行了写操作才会出现竟态条件。只是读操作是永远不可能产生竟态条件的。创建不可变的对象我们可以创建一个不可变的对象保证多线程访问的时候不会被修改从而实现了线程安全123456789101112public class ImmutableValue &#123; private int value = 0; public ImmutableValue(int value) &#123; this.value = value; &#125; public int getValue()&#123; return this.value; &#125;&#125;我们创建了一个类ImmutableValue，该类创建的时候通过构造方法对成员变量value进行赋值，类没有提供修改value值的方法，一旦创建类那么value也就不再进行修改。提供了getValue()方法获取value的值。对象引用仍然是线程不安全的虽然类ImmutableValue是不可变的，在多线程环境下不存在线程安全问题。但是不可变的类的引用确实线程不安全的1234567891011public class ImmutableValueHolder &#123; private ImmutableValue value = null; public ImmutableValueHolder(ImmutableValue value)&#123; this.value = value; &#125; public void setValue(ImmutableValue value)&#123; this.value = value; &#125;&#125;在类中ImmutableValueHolder属性value是不可变的类，但是该类本身会改变value的引用。虽然ImmutableValue是不可变的，但是作为该类中的引用时却是线程不安全的]]></content>
