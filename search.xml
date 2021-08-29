@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[jmx技术介绍]]></title>
+    <url>%2F2021%2F08%2F29%2Fjmx%E6%8A%80%E6%9C%AF%E4%BB%8B%E7%BB%8D%2F</url>
+    <content type="text"><![CDATA[概览jmx(Java Management Extension)自j2se5.0被加入的java平台标准。jmx提供了简单，统一的方式来管理监控服务，设备和应用等资源，甚至可以用jmx来管理java VM。在语言层面定义了jmx的标准api，结构和设计模式。被管理监控的资源被定义为Managed Beans（简称MBean），MBean被注册到MBean Server，MBean Server充当代理的角色运行在应用中。MBean不依赖运行的MBean Server，也就是说只要满足规范，那么你编写的MBean可以运行在任何MBean Server中，就像我们编写的servlet在tomcat或weblogic上都能够运行一样。jmx定义了connector规范，远程管理客户端和agent只要满足规范任何协议都能够交互。技术架构jmx被划分为三层：检测jmx代理远程管理检测对需要管理检测的资源需要定义一个MBean来描述通过jmx管理的指标，MBean必须实现一个接口，这个接口的方法定义了远程管理能够进行的操作代理一个代理即一个MBean Server，代理一般运行和应用运行在同一个设备上，这不是必须。代理不需要关注管理的MBean是什么样子以及如何实现，实现了哪些功能。MBean只要按照标准注册到代理上就行远程管理远程管理主要有两部分组成：connection和adaptor。connector可以实现诸如：rmi，snmp等协议来和代理通信。adaptor提供对监控指标如何显示，比如HTML adaptor可以在浏览器显示管理MBean。]]></content>
+      <categories>
+        <category>java基础</category>
+      </categories>
+      <tags>
+        <tag>jmx</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[LockSupport]]></title>
     <url>%2F2021%2F08%2F08%2FLockSupport%2F</url>
     <content type="text"><![CDATA[创建锁和其他同步类的基础同步原语。该类使每个线程都关联一个许可(permit)。调用park方法时，如果许可可用那么立即返回否则就阻塞，调用unpark释放许可。基本使用我们通过简短的一段代码演示如何使用park来阻塞线程，再调用unpark方法来唤醒线程代码如下：1234567891011Thread main = Thread.currentThread();new Thread( ()-&gt;&#123; try &#123; Thread.sleep(1000); &#125; catch (InterruptedException e) &#123; e.printStackTrace(); &#125; LockSupport.unpark(main);&#125;).start();LockSupport.park();System.out.println("main结束");在main线程中调用park方法阻塞，启动一个线程sleep1秒钟中后调用unpark方法唤醒main线程控制台输出如下：1main结束类图在LockSupport类中全部都是static的方法，意味着我们可以当作工具方法直接调用无须创建该类LockSupport特性无序：在子线程中预先释放许可，main线程中获取许可直接返回1234567891011Thread main = Thread.currentThread();new Thread( ()-&gt;&#123; LockSupport.unpark(main);&#125;).start();try &#123; Thread.sleep(1000);&#125; catch (InterruptedException e) &#123; e.printStackTrace();&#125;LockSupport.park();System.out.println("main结束");main线程中创建子线程直接对main线程进行许可释放。main线程sleep1秒钟后获得许可直接返回控制台输出：1main结束不可重入：如果多次调用park线程直接进入死锁子线程各种重复调用两次LockSupport.unpark(main)方法，main线程中同样的重复调用LockSupport.park()方法，我们认为的情况是，释放了两次许可后，获取两次许可都应该是立即返回并在控制台输出：main结束，但是实际情况并非如此而是直接发生了死锁]]></content>
