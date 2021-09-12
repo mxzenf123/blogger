@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://mxzenf123.github.io/index.html/"/>
-  <updated>2021-08-29T07:32:35.362Z</updated>
+  <updated>2021-09-12T07:28:39.186Z</updated>
   <id>https://mxzenf123.github.io/index.html/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>spring多数据源实现</title>
+    <link href="https://mxzenf123.github.io/index.html/2021/09/12/spring%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90%E5%AE%9E%E7%8E%B0/"/>
+    <id>https://mxzenf123.github.io/index.html/2021/09/12/spring多数据源实现/</id>
+    <published>2021-09-12T06:28:50.227Z</published>
+    <updated>2021-09-12T07:28:39.186Z</updated>
+    
+    <content type="html"><![CDATA[<p>我们系统随着时间推移会逐渐庞大，可能会涉及将数据拆分存储到不同的数据库中去，或者达到读写分离，系统需要访问不同的数据库。</p><p>多数据源方案很多种，比如使用数据库中间件Mycat，将系统微服务化等等。我们这里主要使用spring提供的多数据源支持。</p><p>我遇到的业务场景是这样的，我们有一套管理系统，他涉及很多业务，有三四个同事在维护不同的业务板块。每块业务数据都在一台服务器上，使用不同用户区分不同业务，所以发布的时候默认选定了一块数据源，访问其他业务的加上数据库用户名即可。业务都不是复杂业务，量也不大，这种方式持续了很久，直到我接手后我负责的业务需要迁移数据库，并且我们逐渐在淘汰这种方式访问不同业务数据。</p><p>每块业务代码都通过模块方式隔离，所以我们只要在前端访问controller的时候切换数据源即可。</p><h3 id="spring的AbstractRoutingDataSource源码解读"><a href="#spring的AbstractRoutingDataSource源码解读" class="headerlink" title="spring的AbstractRoutingDataSource源码解读"></a>spring的AbstractRoutingDataSource源码解读</h3><p>我们来看看AbstractRoutingDataSource类图</p><p><img src="/images/2021/AbstractRoutingDataSource.png" alt></p><p>这个类主要有两点：</p><ol><li><p>该类本身就是一个DataSource的抽象类</p></li><li><p>实现了InitializingBean将多个数据源配置通过键值对的形式存储在Map中供自定义的类使用</p></li></ol><p>源码如下</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Iterator var1 = <span class="keyword">this</span>.targetDataSources.entrySet().iterator();</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span>(var1.hasNext()) &#123;</span><br><span class="line">    Entry&lt;Object, Object&gt; entry = (Entry)var1.next();</span><br><span class="line">    Object lookupKey = <span class="keyword">this</span>.resolveSpecifiedLookupKey(getKey());</span><br><span class="line">    DataSource dataSource = <span class="keyword">this</span>.resolveSpecifiedData(entry.getValue());</span><br><span class="line">    <span class="keyword">this</span>.resolvedDataSources.put(lookupKey, dataSource);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>我们所要使用的多个DataSource就放在resolvedDataSources里了。再看看获取sql Connection的代码：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Connection <span class="title">getConnection</span><span class="params">()</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.determineTargetDataSource().getConnection();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> DataSource <span class="title">determineTargetDataSource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Assert.notNull(<span class="keyword">this</span>.resolvedDataSources, <span class="string">"DataSource router noinitialized"</span>);</span><br><span class="line">    Object lookupKey = <span class="keyword">this</span>.determineCurrentLookupKey();</span><br><span class="line">    DataSource dataSource = (DataSource)<span class="keyword">this</span>.resolvedDataSources.g(lookupKey);</span><br><span class="line">    <span class="keyword">if</span> (dataSource == <span class="keyword">null</span> &amp;&amp; (<span class="keyword">this</span>.lenientFallback || lookupKey =<span class="keyword">null</span>)) &#123;</span><br><span class="line">        dataSource = <span class="keyword">this</span>.resolvedDefaultDataSource;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (dataSource == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Cannot determine targeDataSource for lookup key ["</span> + lookupKey + <span class="string">"]"</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> dataSource;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>通过调用determineCurrentLookupKey抽象方法来get到map中我们配置的多个DataSource中的一个来达到了多个数据源切换的目的</p><h3 id="自定义实现切换数据源"><a href="#自定义实现切换数据源" class="headerlink" title="自定义实现切换数据源"></a>自定义实现切换数据源</h3><p>我们怎么才每个请求到达Controller来决定使用哪个数据源呢？我们将请求所在线程和数据源绑定，这样我们就能够对于不同的请求来使用不同的数据源了。这里要用到ThreadLocal。</p><p>我们先继承AbstractRoutingDataSource实现AbstractRoutingDataSource方法</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DynamicDataSource</span> <span class="keyword">extends</span> <span class="title">AbstractRoutingDataSource</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ThreadLocal&lt;String&gt; dataSources = <span class="keyword">new</span> ThreadLocal();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DynamicDataSource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Object <span class="title">determineCurrentLookupKey</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (String)dataSources.get();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setDataSource</span><span class="params">(String customerType)</span> </span>&#123;</span><br><span class="line">        dataSources.set(customerType);</span><br><span class="line">    &#125;    </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">clearDataSource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        dataSources.remove();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>代码中主要对ThreadLocal datasources进行管理，setDataSource对我们要使用的数据源进行key设置；clearDataSource移除ThreadLocal值；determineCurrentLookupKey返回当前线程绑定的数据源key</p><h3 id="拦截controller动态切换数据源"><a href="#拦截controller动态切换数据源" class="headerlink" title="拦截controller动态切换数据源"></a>拦截controller动态切换数据源</h3><p>为了让动态切换数据源代码和业务代码低耦合，我们使用切面和注解的方式来达到目的。自定义注解DtSource来标注controller使用的DataSource</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> yangxin</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Target</span>(&#123;ElementType.METHOD&#125;)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> DtSource &#123;</span><br><span class="line">    <span class="function">String <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> "defaultDataSource"</span>;<span class="comment">//默认数据源</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>通过切面的方式拦截所有controller，在每个请求到达controller时，调用setDataSource设置数据源的key值</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> yangxin</span></span><br><span class="line"><span class="comment"> * add 20210823</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataSourceAspect</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"execution(* org.yangxin..*.controller.*.*(..))"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">beforeController</span><span class="params">(JoinPoint joinPoint)</span></span>&#123;</span><br><span class="line">        MethodSignature signature = (MethodSignature)joinPoint.getSignature();</span><br><span class="line">        Method method = signature.getMethod();</span><br><span class="line">        DtSource annotation = method.getAnnotation(DtSource.class);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != annotation) &#123;</span><br><span class="line">            DynamicDataSource.setDataSource(annotation.value());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>获取controller的DtSource注解，如果没有设置DataSource那么采用默认的否则使用自定义的。至此spring多数据源改造完成。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;我们系统随着时间推移会逐渐庞大，可能会涉及将数据拆分存储到不同的数据库中去，或者达到读写分离，系统需要访问不同的数据库。&lt;/p&gt;&lt;p&gt;多数据源方案很多种，比如使用数据库中间件Mycat，将系统微服务化等等。我们这里主要使用spring提供的多数据源支持。&lt;/p&gt;&lt;p&gt;我遇到
+      
+    
+    </summary>
+    
+    
+      <category term="spring" scheme="https://mxzenf123.github.io/index.html/categories/spring/"/>
+    
+    
+      <category term="spring" scheme="https://mxzenf123.github.io/index.html/tags/spring/"/>
+    
+      <category term="spring 多数据源" scheme="https://mxzenf123.github.io/index.html/tags/spring-%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/"/>
+    
+  </entry>
   
   <entry>
     <title>jmx技术介绍</title>
@@ -509,32 +537,6 @@
     
     
       <category term="mybatis缓存" scheme="https://mxzenf123.github.io/index.html/tags/mybatis%E7%BC%93%E5%AD%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>java自动拆装箱问题总结</title>
-    <link href="https://mxzenf123.github.io/index.html/2019/11/03/java%E8%87%AA%E5%8A%A8%E6%8B%86%E8%A3%85%E7%AE%B1%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/"/>
-    <id>https://mxzenf123.github.io/index.html/2019/11/03/java自动拆装箱问题总结/</id>
-    <published>2019-11-03T03:35:43.214Z</published>
-    <updated>2019-11-03T03:43:41.013Z</updated>
-    
-    <content type="html"><![CDATA[<p>java自动拆装箱自jdk1.5以后新增功能。目的是为了解决基础<br>数据类型和对象操作不便利。比如集合List只能操作对象，而<br>无法对基本数据类型进行add，remove等一系列操作。对自动拆<br>装箱学习过程中，产生了一系列疑问，总结如下</p><h3 id="什么是基础数据类型，什么是包装类"><a href="#什么是基础数据类型，什么是包装类" class="headerlink" title="什么是基础数据类型，什么是包装类"></a>什么是基础数据类型，什么是包装类</h3><h3 id="jdk如何实现自动拆装箱"><a href="#jdk如何实现自动拆装箱" class="headerlink" title="jdk如何实现自动拆装箱"></a>jdk如何实现自动拆装箱</h3><h3 id="自动拆装箱优点和缺点"><a href="#自动拆装箱优点和缺点" class="headerlink" title="自动拆装箱优点和缺点"></a>自动拆装箱优点和缺点</h3><h3 id="自动拆装箱什么时候不自动进行"><a href="#自动拆装箱什么时候不自动进行" class="headerlink" title="自动拆装箱什么时候不自动进行"></a>自动拆装箱什么时候不自动进行</h3>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;java自动拆装箱自jdk1.5以后新增功能。目的是为了解决基础&lt;br&gt;数据类型和对象操作不便利。比如集合List只能操作对象，而&lt;br&gt;无法对基本数据类型进行add，remove等一系列操作。对自动拆&lt;br&gt;装箱学习过程中，产生了一系列疑问，总结如下&lt;/p&gt;&lt;h3 id=
-      
-    
-    </summary>
-    
-    
-      <category term="java基础" scheme="https://mxzenf123.github.io/index.html/categories/java%E5%9F%BA%E7%A1%80/"/>
-    
-    
-      <category term="java自动拆装箱" scheme="https://mxzenf123.github.io/index.html/tags/java%E8%87%AA%E5%8A%A8%E6%8B%86%E8%A3%85%E7%AE%B1/"/>
     
   </entry>
   
